@@ -11,6 +11,7 @@ public class Main {
         final long startTime = System.currentTimeMillis();
         boolean[] primes = new boolean[MAX_NUM + 1];
         Arrays.fill(primes, true);
+        primes[0] = false;
         primes[1] = false;
 
         int max = MAX_NUM;

@@ -4,3 +4,6 @@ a.out
 # Added by cargo
 
 /target
+Main$1.class
+.gitignore
+Main.class
