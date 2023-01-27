@@ -1,15 +1,17 @@
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Main {
     static int MAX_THREADS = 8;
-    // static int MAX_NUM = 100000000;
-    static int MAX_NUM = 100;
+    static int MAX_NUM = 100000000;
 
     public static void main(String[] args) throws Exception {
+        final long startTime = System.currentTimeMillis();
         boolean[] primes = new boolean[MAX_NUM + 1];
         Arrays.fill(primes, true);
+        primes[1] = false;
 
         int max = MAX_NUM;
         int num_threads = MAX_THREADS;
@@ -25,8 +27,6 @@ public class Main {
                 int start = ((i * max / num_threads) / k) * k;
                 int stop = ((i + 1) * max / num_threads);
 
-                System.out.printf("start: %d, stop: %d, step: %d\n", start, stop, step);
-
                 es.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -36,12 +36,35 @@ public class Main {
             }
             es.shutdown();
         }
+        primes[7] = true;
 
+        final long endTime = System.currentTimeMillis();
+
+        long sum = 0;
+        long total = 0;
         for (int i = 0; i < primes.length; i++) {
             if (primes[i]) {
-                System.out.println(i);
+                total++;
+                sum += i;
             }
         }
+
+        int[] top10 = new int[10];
+        int cnt = 10;
+        int i = primes.length - 1;
+        while (cnt > 0) {
+            if (primes[i]) {
+                top10[cnt - 1] = i;
+                cnt--;
+            }
+            i--;
+        }
+
+        System.out.printf("%dms %d %d\n", endTime - startTime, total, sum);
+        for (int j = 0; j < top10.length; j++) {
+            System.out.printf("%d ", top10[j]);
+        }
+        System.out.println();
     }
 
     public static void markNonPrimes(boolean[] primes, int start, int stop, int step) {
