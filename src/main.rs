@@ -8,7 +8,7 @@ const MAX_THREADS: usize = 8;
 const MAX_NUM: usize = 100000000;
 
 fn main() {
-    sieve_sequential(MAX_NUM)
+    sieve_parallel(MAX_NUM, MAX_THREADS)
 }
 
 fn sieve_sequential(max: usize) {
@@ -31,17 +31,17 @@ fn sieve_sequential(max: usize) {
     }
 }
 
-fn sieve_parallel(max: usize) {
+fn sieve_parallel(max: usize, num_threads: usize) {
     let mut primes = vec![true; max + 1];
 
     for k in 2..(max as f64).sqrt() as usize {
-        if !primes[k] {
-            continue;
-        }
+        // if !primes[k] {
+        //     continue;
+        // }
 
         let mut threads = vec![];
-        for i in 1..MAX_THREADS {
-            let chunk_size = MAX_NUM / MAX_THREADS;
+        for i in 1..num_threads {
+            let chunk_size = max / num_threads;
             let prime_index = i * chunk_size;
             let last_multiple = (prime_index / k) * k;
             let last_multiple_local: i64 = last_multiple as i64 - prime_index as i64;
